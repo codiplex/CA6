@@ -31,7 +31,7 @@ X = imp.transform(X)
 
 
 # Linear model
-# Support Vector Regression
+# SGDC Classifier
 clf = SGDClassifier(loss="hinge", penalty="l2", max_iter=5)
 yhat = cross_val_predict(clf, X, y, cv=5)
 
