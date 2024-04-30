@@ -1,6 +1,7 @@
 import pandas as pd 
 import numpy as np
 from sklearn.linear_model import LogisticRegression
+from sklearn.svm import SVR
 from sklearn.svm import SVC
 from sklearn import preprocessing
 from sklearn.model_selection import cross_val_predict
@@ -29,7 +30,8 @@ X = imp.transform(X)
 
 
 # Linear model
-clf = SVC()
+# Support Vector Regression
+clf = SVR()
 yhat = cross_val_predict(clf, X, y, cv=5)
 
 acc = np.mean(yhat==y)

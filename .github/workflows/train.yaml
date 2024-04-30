@@ -10,4 +10,21 @@ jobs:
           pip install -r requirements.txt
           dvc repro
           git fetch --prune
-          dvc metrics diff main
+          # dvc metrics diff main
+      - name: Compare metrics with the main branch
+        id: metrics_comparison
+        run: |
+          git fetch origin main:main
+          METRICS_DIFF=$(dvc metrics diff main --json)
+          ACCURACY_DIFF=$(echo $METRICS_DIFF | jq '.metrics.accuracy.diff')
+          if [ "$ACCURACY_DIFF" != "null" ] && [ $(echo "$ACCURACY_DIFF > 0" | bc -l) -eq 1 ]; then
+            echo "::set-output name=metrics_improved::true"
+          fi
+      - name: Create Pull Request
+        if: steps.metrics_comparison.outputs.metrics_improved == 'true'
+        uses: repo-sync/pull-request@v2
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          pr_title: "Improved Accuracy Metrics"
+          pr_body: "This PR is generated because the accuracy metrics have improved over the main branch."
+          pr_label: "automated-pr"
