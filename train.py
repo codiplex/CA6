@@ -11,6 +11,8 @@ import json
 import seaborn as sns
 import matplotlib.pyplot as plt
 from sklearn.impute import SimpleImputer
+from sklearn.pipeline import make_pipeline
+from sklearn.preprocessing import StandardScaler
 
 df = pd.read_csv("data_processed.csv")
 
@@ -29,7 +31,7 @@ X = imp.transform(X)
 
 
 # Linear model
-clf = SVC()
+clf = make_pipeline(StandardScaler(), SVC())
 yhat = cross_val_predict(clf, X, y, cv=5)
 
 acc = np.mean(yhat==y)
